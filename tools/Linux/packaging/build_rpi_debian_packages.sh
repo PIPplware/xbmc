@@ -104,7 +104,7 @@ EXTRA_FLAGS="-O3 -mcpu=${CPU} ${COMP_FLAGS}"
 
 function configure {
     echo "#---------- configure ----------#"
-    cd $KODI_BUILD_DIR || ( mkdir -p $KODI_BUILD_DIR && cd $KODI_BUILD ) || exit 1
+    cd $KODI_BUILD_DIR || ( mkdir -p $KODI_BUILD_DIR && cd $KODI_BUILD_DIR ) || exit 1
     CXXFLAGS=${EXTRA_FLAGS} CFLAGS=${EXTRA_FLAGS} cmake ${KODI_OPTS} ${REPO_DIR}/project/cmake/ | tee build.log
     echo "#-------------------------------#"
 }
@@ -189,7 +189,7 @@ done
 
 setEnv
 checkEnv
-if [[ ! $ONLY_ADDONS ]]
+if [[ $ONLY_ADDONS == 0 ]]
 then
     configure
     compile
