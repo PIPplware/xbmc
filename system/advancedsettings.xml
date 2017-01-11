@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<advancedsettings>
+
+  <fanartres>720</fanartres>
+  <imageres>540</imageres>
+
+  <video>
+    <busydialogdelayms>750</busydialogdelayms>
+  </video>
+
+  <samba>
+    <clienttimeout>30</clienttimeout>
+  </samba>
+
+  <cache>
+    <memorysize>31457280</memorysize>
+  </cache>
+
+</advancedsettings>

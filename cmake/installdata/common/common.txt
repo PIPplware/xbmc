@@ -10,3 +10,4 @@ system/colors.xml
 system/peripherals.xml
 system/playercorefactory.xml
 system/keyboardlayouts/*
+system/advancedsettings.xml
