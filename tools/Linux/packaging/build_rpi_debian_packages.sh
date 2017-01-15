@@ -51,9 +51,9 @@ function setEnv {
 
     if [[ $CPU == "arm1176jzf-s" ]];
         then
-            COMP_FLAGS="-mfpu=vfp -mtune=arm1176jzf-s"
+            COMP_FLAGS="-mfpu=vfp -mtune=arm1176jzf-s -DRPI=1"
         else
-	    COMP_FLAGS="-march=armv7ve -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad -fPIC"
+	    COMP_FLAGS="-march=armv7ve -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad -fPIC -DRPI=1"
     fi
 
 KODI_OPTS="\
@@ -105,7 +105,12 @@ EXTRA_FLAGS="-O3 -mcpu=${CPU} ${COMP_FLAGS}"
 function configure {
     echo "#---------- configure ----------#"
     cd $KODI_BUILD_DIR || ( mkdir -p $KODI_BUILD_DIR && cd $KODI_BUILD_DIR ) || exit 1
+    rm -rf $KODI_BUILD_DIR/CMakeCache.txt $KODI_BUILD_DIR/CMakeCache.txt $KODI_BUILD_DIR/CMakeFiles $KODI_BUILD_DIR/CPackConfig.cmake $KODI_BUILD_DIR/CTestTestfile.cmake $KODI_BUILD_DIR/cmake_install.cmake > /dev/null
     CXXFLAGS=${EXTRA_FLAGS} CFLAGS=${EXTRA_FLAGS} cmake ${KODI_OPTS} ${REPO_DIR}/project/cmake/ |& tee build.log
+    if [ $? -ne 0 ]; then
+       echo "ERROR: configure step failed.. Bailing out."
+       exit
+    fi
     echo "#-------------------------------#"
 }
 
@@ -113,14 +118,22 @@ function compile {
     echo "#----------- compile -----------#"
     cd $KODI_BUILD_DIR
     CXXFLAGS=${EXTRA_FLAGS} CFLAGS=${EXTRA_FLAGS} cmake --build . -- VERBOSE=1 -j${BUILD_THREADS} |& tee -a build.log
+    if [ $? -ne 0 ]; then
+       echo "ERROR: compile step failed.. Bailing out."
+       exit
+    fi
     echo "#-------------------------------#"
 }
 
 function package {
-   echo "#----------- package -----------#"
-   cd $KODI_BUILD_DIR
-   cpack |& tee -a build.log
-   echo "#-------------------------------#"
+    echo "#----------- package -----------#"
+    cd $KODI_BUILD_DIR
+    cpack |& tee -a build.log
+    if [ $? -ne 0 ]; then
+       echo "ERROR: package step failed.. Bailing out."
+       exit
+    fi
+    echo "#-------------------------------#"
 }
 
 function compileAddons {
@@ -132,6 +145,10 @@ function compileAddons {
    fi
    echo "#------ Configuring addons   ------#"
    cmake -DOVERRIDE_PATHS=1 -DBUILD_DIR=$(pwd) -DCORE_SOURCE_DIR="${REPO_DIR}" -DADDONS_TO_BUILD="${ADDONS_TO_BUILD}" -DADDON_DEPENDS_PATH="${KODI_BUILD_DIR}/build" -DCMAKE_INCLUDE_PATH=/opt/vc/include:/opt/vc/include/interface:/opt/vc/include/interface/vcos/pthreads:/opt/vc/include/interface/vmcs_host/linux -DCMAKE_LIBRARY_PATH=/opt/vc/lib $REPO_DIR/project/cmake/addons/ |& tee -a build_addons.log
+   if [ $? -ne 0 ]; then
+      echo "ADDONS ERROR: configure step failed.. Bailing out."
+      exit
+   fi
    echo "#------ ADDONS Build dir ($(pwd)) ------#"
    for D in $(ls . --ignore="*prefix"); do
 	if [ -d "${D}/debian" ]; then
