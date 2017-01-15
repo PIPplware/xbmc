@@ -105,19 +105,21 @@ EXTRA_FLAGS="-O3 -mcpu=${CPU} ${COMP_FLAGS}"
 function configure {
     echo "#---------- configure ----------#"
     cd $KODI_BUILD_DIR || ( mkdir -p $KODI_BUILD_DIR && cd $KODI_BUILD_DIR ) || exit 1
-    CXXFLAGS=${EXTRA_FLAGS} CFLAGS=${EXTRA_FLAGS} cmake ${KODI_OPTS} ${REPO_DIR}/project/cmake/ | tee build.log
+    CXXFLAGS=${EXTRA_FLAGS} CFLAGS=${EXTRA_FLAGS} cmake ${KODI_OPTS} ${REPO_DIR}/project/cmake/ |& tee build.log
     echo "#-------------------------------#"
 }
 
 function compile {
     echo "#----------- compile -----------#"
-    CXXFLAGS=${EXTRA_FLAGS} CFLAGS=${EXTRA_FLAGS} cmake --build . -- VERBOSE=1 -j${BUILD_THREADS} | tee -a build.log
+    cd $KODI_BUILD_DIR
+    CXXFLAGS=${EXTRA_FLAGS} CFLAGS=${EXTRA_FLAGS} cmake --build . -- VERBOSE=1 -j${BUILD_THREADS} |& tee -a build.log
     echo "#-------------------------------#"
 }
 
 function package {
    echo "#----------- package -----------#"
-   cpack | tee -a build.log
+   cd $KODI_BUILD_DIR
+   cpack |& tee -a build.log
    echo "#-------------------------------#"
 }
 
@@ -129,7 +131,7 @@ function compileAddons {
         cd  $ADDONS_BUILD_DIR && rm -rf *
    fi
    echo "#------ Configuring addons   ------#"
-   cmake -DOVERRIDE_PATHS=1 -DBUILD_DIR=$(pwd) -DCORE_SOURCE_DIR="${REPO_DIR}" -DADDONS_TO_BUILD="${ADDONS_TO_BUILD}" -DADDON_DEPENDS_PATH="${KODI_BUILD_DIR}/build" -DCMAKE_INCLUDE_PATH=/opt/vc/include:/opt/vc/include/interface:/opt/vc/include/interface/vcos/pthreads:/opt/vc/include/interface/vmcs_host/linux -DCMAKE_LIBRARY_PATH=/opt/vc/lib $REPO_DIR/project/cmake/addons/ | tee build.log
+   cmake -DOVERRIDE_PATHS=1 -DBUILD_DIR=$(pwd) -DCORE_SOURCE_DIR="${REPO_DIR}" -DADDONS_TO_BUILD="${ADDONS_TO_BUILD}" -DADDON_DEPENDS_PATH="${KODI_BUILD_DIR}/build" -DCMAKE_INCLUDE_PATH=/opt/vc/include:/opt/vc/include/interface:/opt/vc/include/interface/vcos/pthreads:/opt/vc/include/interface/vmcs_host/linux -DCMAKE_LIBRARY_PATH=/opt/vc/lib $REPO_DIR/project/cmake/addons/ |& tee -a build_addons.log
    echo "#------ ADDONS Build dir ($(pwd)) ------#"
    for D in $(ls . --ignore="*prefix"); do
 	if [ -d "${D}/debian" ]; then
@@ -152,7 +154,7 @@ function compileAddons {
 			sed -i "s/if(OPENGL_FOUND)/if(OPENGL_FOUND AND NOT FORCE_GLES)/g" CMakeLists.txt
 		fi
 		# END GLES Fix
-   		dpkg-buildpackage $DEBUILD_OPTS -us -uc -b | tee -a build.log
+   		dpkg-buildpackage $DEBUILD_OPTS -us -uc -b |& tee -a build_addons.log
 		cd ..
 	fi
    done
