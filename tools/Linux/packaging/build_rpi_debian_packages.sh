@@ -51,9 +51,9 @@ function setEnv {
 
     if [[ $CPU == "arm1176jzf-s" ]];
         then
-            COMP_FLAGS="-mfpu=vfp -mtune=arm1176jzf-s -DRPI=1"
+            COMP_FLAGS="-mfpu=vfp -mtune=arm1176jzf-s"
         else
-	    COMP_FLAGS="-march=armv7ve -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad -fPIC -DRPI=1"
+	    COMP_FLAGS="-march=armv7ve -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad -fPIC"
     fi
 
 KODI_OPTS="\
@@ -97,7 +97,7 @@ KODI_OPTS="\
 -DDEBIAN_PACKAGE_VERSION=${DEB_PACK_VERSION}~ \
 -DDEB_PACKAGE_ARCHITECTURE=${DEB_ARCH}
 "
-EXTRA_FLAGS="-O3 -mcpu=${CPU} ${COMP_FLAGS}"
+EXTRA_FLAGS="-mcpu=${CPU} ${COMP_FLAGS} -DRPI=1"
 
     echo "#-------------------------------#"
 }
