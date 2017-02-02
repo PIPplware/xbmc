@@ -4,7 +4,7 @@ REPO_DIR=${REPO_DIR:-$(pwd)}
 KODI_BUILD_DIR=${KODI_BUILD_DIR:-"${REPO_DIR}/build"}
 ADDONS_TO_BUILD=${ADDONS_TO_BUILD:-""}
 ADDONS_BUILD_DIR=${ADDONS_BUILD_DIR:-"${KODI_BUILD_DIR}/addons_build/"}
-ADDONS_BUILD_NUMBER=${ADDONS_BUILD_NUMBER:-"0"}
+ADDONS_BUILD_NUMBER=${ADDONS_BUILD_NUMBER:-"1"}
 CPU=${CPU:-"cortex-a7"}
 BUILD_TYPE=${BUILD_TYPE:-"Release"}
 DEB_ARCH=${DEB_ARCH:-"armhf"}
@@ -51,9 +51,9 @@ function setEnv {
 
     if [[ $CPU == "arm1176jzf-s" ]];
         then
-            COMP_FLAGS="-mfpu=vfp -mtune=arm1176jzf-s"
+            COMP_FLAGS="-mfpu=vfp -mtune=arm1176jzf-s -fomit-frame-pointer"
         else
-	    COMP_FLAGS="-march=armv7ve -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad -fPIC"
+	    COMP_FLAGS="-march=armv7ve -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad -fomit-frame-pointer -fPIC"
     fi
 
 KODI_OPTS="\
