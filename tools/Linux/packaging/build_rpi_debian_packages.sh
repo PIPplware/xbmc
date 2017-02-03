@@ -3,7 +3,7 @@
 REPO_DIR=${REPO_DIR:-$(pwd)}
 KODI_BUILD_DIR=${KODI_BUILD_DIR:-"${REPO_DIR}/build"}
 ADDONS_TO_BUILD=${ADDONS_TO_BUILD:-""}
-ADDONS_BUILD_DIR=${ADDONS_BUILD_DIR:-"${KODI_BUILD_DIR}/addons_build/"}
+ADDONS_BUILD_DIR=${ADDONS_BUILD_DIR:-"${KODI_BUILD_DIR}/build/addons_build/"}
 ADDONS_BUILD_NUMBER=${ADDONS_BUILD_NUMBER:-"1"}
 CPU=${CPU:-"cortex-a7"}
 BUILD_TYPE=${BUILD_TYPE:-"Release"}
@@ -51,9 +51,9 @@ function setEnv {
 
     if [[ $CPU == "arm1176jzf-s" ]];
         then
-            COMP_FLAGS="-mfpu=vfp -mtune=arm1176jzf-s -fomit-frame-pointer"
+            COMP_FLAGS="-mfpu=vfp -mtune=arm1176jzf-s"
         else
-	    COMP_FLAGS="-march=armv7ve -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad -fomit-frame-pointer -fPIC"
+	    COMP_FLAGS="-march=armv7ve -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad -fPIC"
     fi
 
 KODI_OPTS="\
@@ -97,14 +97,15 @@ KODI_OPTS="\
 -DDEBIAN_PACKAGE_VERSION=${DEB_PACK_VERSION}~ \
 -DDEB_PACKAGE_ARCHITECTURE=${DEB_ARCH}
 "
-EXTRA_FLAGS="-mcpu=${CPU} ${COMP_FLAGS} -DRPI=1"
+EXTRA_FLAGS="-mcpu=${CPU} ${COMP_FLAGS} -fomit-frame-pointer -DRPI=1"
 
     echo "#-------------------------------#"
 }
 
 function configure {
     echo "#---------- configure ----------#"
-    cd $KODI_BUILD_DIR &> /dev/null || ( mkdir -p $KODI_BUILD_DIR && cd $KODI_BUILD_DIR ) || exit 1
+    [ -d $KODI_BUILD_DIR ] || mkdir -p $KODI_BUILD_DIR || exit 1
+    cd $KODI_BUILD_DIR || exit 1
     rm -rf $KODI_BUILD_DIR/CMakeCache.txt $KODI_BUILD_DIR/CMakeCache.txt $KODI_BUILD_DIR/CMakeFiles $KODI_BUILD_DIR/CPackConfig.cmake $KODI_BUILD_DIR/CTestTestfile.cmake $KODI_BUILD_DIR/cmake_install.cmake > /dev/null
     CXXFLAGS=${EXTRA_FLAGS} CFLAGS=${EXTRA_FLAGS} cmake ${KODI_OPTS} ${REPO_DIR}/project/cmake/ |& tee build.log
     if [ $? -ne 0 ]; then
@@ -137,7 +138,8 @@ function package {
 }
 
 function compileAddons {
-   cd  $ADDONS_BUILD_DIR &> /dev/null || ( mkdir -p $ADDONS_BUILD_DIR && cd $ADDONS_BUILD_DIR ) || exit 1 
+   [ -d $ADDONS_BUILD_DIR ] || mkdir -p $ADDONS_BUILD_DIR || exit 1
+   cd $ADDONS_BUILD_DIR || exit 1 
    echo "#------ Building ADDONS (${ADDONS_TO_BUILD}) ------#"
    if [[ $DEBUILD_OPTS != *"-nc"* ]]
    then
