@@ -49,11 +49,9 @@ function setEnv {
 
     echo "#------ preparing environment ------#"
 
-    if [[ $CPU == "arm1176jzf-s" ]];
-        then
-            COMP_FLAGS="-mfpu=vfp -mtune=arm1176jzf-s"
-        else
-	    COMP_FLAGS="-march=armv7ve -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad -fPIC"
+    if [[ $CPU != "arm1176jzf-s" ]];
+    then
+	    COMP_FLAGS="-march=armv7ve"
     fi
 
 KODI_OPTS="\
@@ -97,7 +95,7 @@ KODI_OPTS="\
 -DDEBIAN_PACKAGE_VERSION=${DEB_PACK_VERSION}~ \
 -DDEB_PACKAGE_ARCHITECTURE=${DEB_ARCH}
 "
-EXTRA_FLAGS="-mcpu=${CPU} ${COMP_FLAGS} -fomit-frame-pointer -DRPI=1"
+EXTRA_FLAGS="${COMP_FLAGS} -fomit-frame-pointer -DRPI=1"
 
     echo "#-------------------------------#"
 }
@@ -106,23 +104,25 @@ function configure {
     echo "#---------- configure ----------#"
     [ -d $KODI_BUILD_DIR ] || mkdir -p $KODI_BUILD_DIR || exit 1
     cd $KODI_BUILD_DIR || exit 1
-    rm -rf $KODI_BUILD_DIR/CMakeCache.txt $KODI_BUILD_DIR/CMakeCache.txt $KODI_BUILD_DIR/CMakeFiles $KODI_BUILD_DIR/CPackConfig.cmake $KODI_BUILD_DIR/CTestTestfile.cmake $KODI_BUILD_DIR/cmake_install.cmake > /dev/null
+    rm -rf $KODI_BUILD_DIR/CMakeCache.txt $KODI_BUILD_DIR/CMakeFiles $KODI_BUILD_DIR/CPackConfig.cmake $KODI_BUILD_DIR/CTestTestfile.cmake $KODI_BUILD_DIR/cmake_install.cmake > /dev/null
     CXXFLAGS=${EXTRA_FLAGS} CFLAGS=${EXTRA_FLAGS} cmake ${KODI_OPTS} ${REPO_DIR}/project/cmake/ |& tee build.log
-    if [ $? -ne 0 ]; then
-       echo "ERROR: configure step failed.. Bailing out."
-       exit
-    fi
+    # CMAKE Doesn't have a return code for errors yet..
+    #if [ $? -ne 0 ]; then
+    #   echo "ERROR: configure step failed.. Bailing out."
+    #   exit
+    #fi
     echo "#-------------------------------#"
 }
 
 function compile {
     echo "#----------- compile -----------#"
     cd $KODI_BUILD_DIR &> /dev/null
-    CXXFLAGS=${EXTRA_FLAGS} CFLAGS=${EXTRA_FLAGS} cmake --build . -- VERBOSE=1 -j${BUILD_THREADS} |& tee -a build.log
-    if [ $? -ne 0 ]; then
-       echo "ERROR: compile step failed.. Bailing out."
-       exit
-    fi
+    cmake --build . -- VERBOSE=1 -j${BUILD_THREADS} |& tee -a build.log
+    # CMAKE Doesn't have a return code for errors yet..
+    #if [ $? -ne 0 ]; then
+    #   echo "ERROR: compile step failed.. Bailing out."
+    #   exit
+    #fi
     echo "#-------------------------------#"
 }
 
@@ -130,10 +130,11 @@ function package {
     echo "#----------- package -----------#"
     cd $KODI_BUILD_DIR &> /dev/null
     cpack |& tee -a build.log
-    if [ $? -ne 0 ]; then
-       echo "ERROR: package step failed.. Bailing out."
-       exit
-    fi
+    # CMAKE Doesn't have a return code for errors yet..
+    #if [ $? -ne 0 ]; then
+    #   echo "ERROR: package step failed.. Bailing out."
+    #   exit
+    #fi
     echo "#-------------------------------#"
 }
 

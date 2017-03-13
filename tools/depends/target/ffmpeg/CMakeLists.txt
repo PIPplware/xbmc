@@ -120,26 +120,6 @@ externalproject_add(ffmpeg
                       --enable-protocol=http
                       --enable-encoder=png
                       --enable-encoder=mjpeg
-                      --cpu=cortex-a7
-                      --enable-neon
-                      --enable-hardcoded-tables
-                      --disable-armv5te
-                      --disable-armv6t2
-                      --disable-debug
-                      --disable-vaapi
-                      --disable-vdpau
-                      --enable-bzlib
-                      --enable-gnutls
-                      --enable-libvorbis
-                      --enable-muxer=ogg
-                      --enable-encoder=libvorbis
-                      --enable-nonfree
-                      --enable-zlib
-                      --enable-mmal
-                      --enable-omx-rpi
-                      --extra-ldflags=${CMAKE_EXE_LINKER_FLAGS}
-                      --extra-cxxflags=${CMAKE_CXX_FLAGS}
-                      --extra-cflags=${CMAKE_C_FLAGS}
                       ${ffmpeg_conf})
 
 install(CODE "Message(Done)")
