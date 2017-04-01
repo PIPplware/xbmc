@@ -95,7 +95,7 @@ KODI_OPTS="\
 -DDEBIAN_PACKAGE_VERSION=${DEB_PACK_VERSION}~ \
 -DDEB_PACKAGE_ARCHITECTURE=${DEB_ARCH}
 "
-EXTRA_FLAGS="${COMP_FLAGS} -fomit-frame-pointer -DRPI=1"
+EXTRA_FLAGS="${COMP_FLAGS} -fomit-frame-pointer"
 
     echo "#-------------------------------#"
 }
