@@ -67,7 +67,7 @@ restore_screen_mode() {
 save_screen_mode
 
 # check if pulseaudio has already been started by someone else
-if /usr/bin/pulseaudio --check; then
+if [ ! -f /usr/bin/pulseaudio ] || /usr/bin/pulseaudio --check; then
        true
 else
        /usr/bin/pulseaudio --start >/dev/null 2>&1
