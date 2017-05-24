@@ -53,6 +53,12 @@ function setEnv {
     then
 	    COMP_FLAGS="-march=armv7ve"
     fi
+    if [[ $BUILD_TYPE == 'Release' ]]; 
+    then
+        DEBIAN_PACKAGE_TYPE="stable"
+    else
+        DEBIAN_PACKAGE_TYPE="unstable"
+    fi
 
 KODI_OPTS="\
 -DVERBOSE=1 \
@@ -93,8 +99,10 @@ KODI_OPTS="\
 -DENABLE_LIRC=ON \
 -DCPACK_GENERATOR=DEB \
 -DDEBIAN_PACKAGE_VERSION=${DEB_PACK_VERSION}~ \
--DDEB_PACKAGE_ARCHITECTURE=${DEB_ARCH}
+-DDEB_PACKAGE_ARCHITECTURE=${DEB_ARCH} \
+-DDEBIAN_PACKAGE_TYPE=${DEBIAN_PACKAGE_TYPE}
 "
+
 EXTRA_FLAGS="${COMP_FLAGS} -fomit-frame-pointer"
 
     echo "#-------------------------------#"
