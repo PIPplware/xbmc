@@ -180,9 +180,16 @@ function compileAddons {
 		if [[ -f "FindOpenGLES2.cmake" ]]; then
 			sed -i "s/-DBUILD_SHARED_LIBS=1 -DUSE_LTO=1/-DBUILD_SHARED_LIBS=1 -DFORCE_GLES=1 -DUSE_LTO=1/g" debian/rules
 			sed -i "s/if(OPENGL_FOUND)/if(OPENGL_FOUND AND NOT FORCE_GLES)/g" CMakeLists.txt
+			sed -i "s/OpenGLES2 glesv2/OPENGLES2 brcmglesv2/g" FindOpenGLES2.cmake
+            sed -i "/endif(PKG_CONFIG_FOUND)/i \
+                link_directories(\${OPENGLES2_LIBRARY_DIRS})" FindOpenGLES2.cmake
+            sed -i "/endif(PKG_CONFIG_FOUND)/i \
+                include_directories(\${OPENGLES2_INCLUDE_DIRS})" FindOpenGLES2.cmake
+			sed -i "s/NAMES GLESv2/NAMES brcmGLESv2/g" FindOpenGLES2.cmake
+			sed -i "s/NAMES EGL/NAMES brcmEGL/g" FindOpenGLES2.cmake
 		fi
 		# END GLES Fix
-   		dpkg-buildpackage $DEBUILD_OPTS -us -uc -b |& tee -a build_addons.log
+   		PKG_CONFIG_PATH=/opt/vc/lib/pkgconfig dpkg-buildpackage $DEBUILD_OPTS -us -uc -b |& tee -a build_addons.log
 		cd ..
 	fi
    done
