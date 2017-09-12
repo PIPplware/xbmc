@@ -8,7 +8,7 @@ ADDONS_BUILD_NUMBER=${ADDONS_BUILD_NUMBER:-"1"}
 CPU=${CPU:-"cortex-a7"}
 BUILD_TYPE=${BUILD_TYPE:-"Release"}
 DEB_ARCH=${DEB_ARCH:-"armhf"}
-DEB_PACK_VERSION=${DEB_PACK_VERSION:-"2"}
+DEB_PACK_VERSION=${DEB_PACK_VERSION:-"1"}
 DEBUILD_OPTS=${DEBUILD_OPTS:-""}
 BUILD_THREADS=$(( $(nproc)-1))
 
@@ -53,6 +53,12 @@ function setEnv {
     then
 	    COMP_FLAGS="-march=armv7ve"
     fi
+    if [[ $BUILD_TYPE == 'Release' ]];
+    then
+        DEBIAN_PACKAGE_TYPE="stable"
+    else
+        DEBIAN_PACKAGE_TYPE="unstable"
+    fi
 
 KODI_OPTS="\
 -DVERBOSE=1 \
@@ -92,8 +98,10 @@ KODI_OPTS="\
 -DENABLE_LIRC=ON \
 -DCPACK_GENERATOR=DEB \
 -DDEBIAN_PACKAGE_VERSION=${DEB_PACK_VERSION}~ \
--DDEB_PACKAGE_ARCHITECTURE=${DEB_ARCH}
+-DDEB_PACKAGE_ARCHITECTURE=${DEB_ARCH} \
+-DDEBIAN_PACKAGE_TYPE=${DEBIAN_PACKAGE_TYPE}
 "
+
 EXTRA_FLAGS="${COMP_FLAGS} -fomit-frame-pointer"
 
     echo "#-------------------------------#"
@@ -129,7 +137,7 @@ function package {
     echo "#----------- package -----------#"
     cd $KODI_BUILD_DIR &> /dev/null
     cpack |& tee -a build.log
-    cpack --config CPackSourceConfig.cmake |& tee -a build.log
+    cpack -G TXZ --config CPackSourceConfig.cmake |& tee -a build.log
     # CMAKE Doesn't have a return code for errors yet..
     #if [ $? -ne 0 ]; then
     #   echo "ERROR: package step failed.. Bailing out."
@@ -172,9 +180,16 @@ function compileAddons {
 		if [[ -f "FindOpenGLES2.cmake" ]]; then
 			sed -i "s/-DBUILD_SHARED_LIBS=1 -DUSE_LTO=1/-DBUILD_SHARED_LIBS=1 -DFORCE_GLES=1 -DUSE_LTO=1/g" debian/rules
 			sed -i "s/if(OPENGL_FOUND)/if(OPENGL_FOUND AND NOT FORCE_GLES)/g" CMakeLists.txt
+            sed -i "s/OpenGLES2 glesv2/OPENGLES2 brcmglesv2/g" FindOpenGLES2.cmake
+            sed -i "/endif(PKG_CONFIG_FOUND)/i \
+                link_directories(\${OPENGLES2_LIBRARY_DIRS})" FindOpenGLES2.cmake
+            sed -i "/endif(PKG_CONFIG_FOUND)/i \
+                include_directories(\${OPENGLES2_INCLUDE_DIRS})" FindOpenGLES2.cmake
+            sed -i "s/NAMES GLESv2/NAMES brcmGLESv2/g" FindOpenGLES2.cmake
+            sed -i "s/NAMES EGL/NAMES brcmEGL/g" FindOpenGLES2.cmake
 		fi
 		# END GLES Fix
-   		dpkg-buildpackage $DEBUILD_OPTS -us -uc -b |& tee -a build_addons.log
+   		PKG_CONFIG_PATH=/opt/vc/lib/pkgconfig dpkg-buildpackage $DEBUILD_OPTS -us -uc -b |& tee -a build_addons.log
 		cd ..
 	fi
    done
