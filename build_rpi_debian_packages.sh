@@ -129,6 +129,7 @@ function package {
     echo "#----------- package -----------#"
     cd $KODI_BUILD_DIR &> /dev/null
     cpack |& tee -a build.log
+    cpack --config CPackSourceConfig.cmake |& tee -a build.log
     # CMAKE Doesn't have a return code for errors yet..
     #if [ $? -ne 0 ]; then
     #   echo "ERROR: package step failed.. Bailing out."
