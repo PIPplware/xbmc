@@ -101,6 +101,7 @@ externalproject_add(ffmpeg
                     CONFIGURE_COMMAND ${pkgconf} <SOURCE_DIR>/configure
                       --prefix=${CMAKE_INSTALL_PREFIX}
                       --extra-version="kodi-${FFMPEG_VER}"
+		      --enable-small
                       --disable-devices
                       --disable-doc
                       --disable-ffplay

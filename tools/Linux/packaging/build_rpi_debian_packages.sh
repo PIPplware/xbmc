@@ -49,10 +49,6 @@ function setEnv {
 
     echo "#------ preparing environment ------#"
 
-    if [[ $CPU != "arm1176jzf-s" ]];
-    then
-	    COMP_FLAGS="-march=armv7ve"
-    fi
     if [[ $BUILD_TYPE == 'Release' ]]; 
     then
         DEBIAN_PACKAGE_TYPE="stable"
@@ -103,7 +99,7 @@ KODI_OPTS="\
 -DDEBIAN_PACKAGE_TYPE=${DEBIAN_PACKAGE_TYPE}
 "
 
-EXTRA_FLAGS="${COMP_FLAGS} -fomit-frame-pointer"
+EXTRA_FLAGS="-Os -fomit-frame-pointer"
 
     echo "#-------------------------------#"
 }
