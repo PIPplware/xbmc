@@ -155,7 +155,7 @@ function compileAddons {
         cd  $ADDONS_BUILD_DIR && rm -rf *
    fi
    echo "#------ Configuring addons   ------#"
-   cmake -DOVERRIDE_PATHS=1 -DBUILD_DIR=$(pwd) -DCORE_SOURCE_DIR="${REPO_DIR}" -DADDONS_TO_BUILD="${ADDONS_TO_BUILD}" -DADDON_DEPENDS_PATH="${KODI_BUILD_DIR}/build" -DCMAKE_INCLUDE_PATH=/opt/vc/include:/opt/vc/include/interface:/opt/vc/include/interface/vcos/pthreads:/opt/vc/include/interface/vmcs_host/linux -DCMAKE_LIBRARY_PATH=/opt/vc/lib $REPO_DIR/project/cmake/addons/ |& tee -a build_addons.log
+   cmake -DOVERRIDE_PATHS=1 -DBUILD_DIR=$(pwd) -DCORE_SOURCE_DIR="${REPO_DIR}" -DADDONS_TO_BUILD="${ADDONS_TO_BUILD}" -DADDON_DEPENDS_PATH="${KODI_BUILD_DIR}/build" -DCMAKE_INCLUDE_PATH=/opt/vc/include:/opt/vc/include/interface:/opt/vc/include/interface/vcos/pthreads:/opt/vc/include/interface/vmcs_host/linux -DCMAKE_LIBRARY_PATH=/opt/vc/lib $REPO_DIR/cmake/addons/ |& tee -a build_addons.log
    if [ $? -ne 0 ]; then
       echo "ADDONS ERROR: configure step failed.. Bailing out."
       exit
