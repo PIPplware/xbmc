@@ -267,7 +267,7 @@ fbset -depth 8 > /dev/null 2>&1
 fbset -depth $ORIGINAL_DEPTH > /dev/null 2>&1
 if pgrep "X" > /dev/null
 then
-    xrefresh >/dev/null 2>&1
+    true
 else
     pulseaudio --kill >/dev/null 2>&1
 fi
