@@ -121,6 +121,11 @@ externalproject_add(ffmpeg
                       --enable-protocol=http
                       --enable-encoder=png
                       --enable-encoder=mjpeg
+                      --disable-libxcb
+                      --disable-libxcb-shape
+                      --disable-libxcb-shm
+                      --disable-libxcb-xfixes
+                      --disable-xlib
                       ${ffmpeg_conf})
 
 install(CODE "Message(Done)")
