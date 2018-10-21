@@ -66,13 +66,6 @@ restore_screen_mode() {
 
 save_screen_mode
 
-# check if pulseaudio has already been started by someone else
-if [ ! -f /usr/bin/pulseaudio ] || /usr/bin/pulseaudio --check; then
-       true
-else
-       /usr/bin/pulseaudio --start >/dev/null 2>&1
-fi
-
 # Workaround for high CPU load with nvidia GFX
 export __GL_YIELD=USLEEP
 
@@ -265,12 +258,6 @@ done
 restore_screen_mode
 fbset -depth 8 > /dev/null 2>&1
 fbset -depth $ORIGINAL_DEPTH > /dev/null 2>&1
-if pgrep "X" > /dev/null
-then
-    true
-else
-    pulseaudio --kill >/dev/null 2>&1
-fi
 if [ -f "/usr/bin/cec-daemon" ]
 then
     sudo service cec start >/dev/null 2>&1
