@@ -172,6 +172,9 @@ function compileAddons {
 				echo "usr/share" >> ${F}
 			done
 		fi
+		if [[ $D == "audioencoder"* || $D == "audiodecoder"* ]]; then
+			sed -i "s/-DUSE_LTO=1//g" debian/rules
+		fi
 
 		# START GLES Fix
 		if [[ -f "FindOpenGLES2.cmake" ]]; then
