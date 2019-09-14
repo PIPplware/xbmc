@@ -4,7 +4,7 @@
     <category id="videoplayer">
        <group id="2">
         <setting id="videoplayer.usedisplayasclock">
-          <visible>false</visible>
+          <visible>true</visible>
           <default>false</default>
         </setting>
       </group>
