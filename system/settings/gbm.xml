@@ -9,6 +9,11 @@
         </setting>
       </group>
       <group id="3">
+        <setting id="videoplayer.usemmal" type="boolean" label="36434" help="36435">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.useprimedecoder" type="boolean" label="13430" help="36172">
           <visible>false</visible>
           <level>2</level>
