@@ -68,5 +68,12 @@
         </setting>
       </group>
     </category>
+    <category id="audio">
+      <group id="1">
+        <setting id="audiooutput.audiodevice">
+          <default>PI:HDMI</default>
+        </setting>
+      </group>
+    </category>
   </section>
 </settings>
