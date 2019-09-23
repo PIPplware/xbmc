@@ -17,3 +17,22 @@ tee -a /etc/udev/rules.d/99-kodi.rules <<_EOF_
 SUBSYSTEM=="drm", GROUP="video", MODE="0660"
 _EOF_ 2>/dev/null
 fi
+
+if [ ! -f "/etc/polkit-1/localauthority/50-local.d/kodi.pkla" ]; then
+tee -a /etc/polkit-1/localauthority/50-local.d/kodi.pkla <<_EOF_
+[Allow users in the plugdev group to reboot and shutdown]
+Identity=unix-group:plugdev
+Action=org.freedesktop.consolekit*;org.freedesktop.upower*;org.freedesktop.login1*
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes
+
+[Allow users in the plugdev group to mount/unmount devices]
+Identity=unix-group:plugdev
+Action=org.freedesktop.udisks*
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes
+_EOF_ 2>/dev/null
+fi
+
