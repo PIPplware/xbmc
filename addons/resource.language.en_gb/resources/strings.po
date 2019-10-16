@@ -7266,7 +7266,49 @@ msgctxt "#13465"
 msgid "EGL"
 msgstr ""
 
-#empty strings from id 13466 to 13504
+#. Option for setting Limit GUI Size
+#: system/settings/gbm.xml
+msgctxt "#13466"
+msgid "Limit GUI Size"
+msgstr ""
+
+#. Description of setting with label #13466 "Limit GUI Size"
+#: system/settings/gbm.xml
+msgctxt "#13467"
+msgid "This option limits GUI size for screen resolutions above 1080p. Requires restart."
+msgstr ""
+
+#. String for options 1 of setting with label #13466 "Limit GUI Size"
+#: system/settings/gbm.xml
+msgctxt "#13468"
+msgid "No limit"
+msgstr ""
+
+#. String for options 2 of setting with label #13466 "Limit GUI Size"
+#: system/settings/gbm.xml
+msgctxt "#13469"
+msgid "720p"
+msgstr ""
+
+#. String for options 3 of setting with label #13466 "Limit GUI Size"
+#: system/settings/gbm.xml
+msgctxt "#13470"
+msgid "1080p / 720p (>30hz)"
+msgstr ""
+
+#. String for options 4 of setting with label #13466 "Limit GUI Size"
+#: system/settings/gbm.xml
+msgctxt "#13471"
+msgid "1080p"
+msgstr ""
+
+#. String for options 5 of setting with label #13466 "Limit GUI Size"
+#: system/settings/gbm.xml
+msgctxt "#13472"
+msgid "No limit / 1080p (>30hz)"
+msgstr ""
+
+#empty strings from id 13473 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
